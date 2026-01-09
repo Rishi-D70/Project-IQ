@@ -1,0 +1,1 @@
+print("COre ready")
