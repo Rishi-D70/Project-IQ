@@ -56,7 +56,7 @@ Structured Intelligence Output
 ## Tech Stack
 - **Backend:** Python  
 - **Frontend:** HTML, CSS, JavaScript  
-- **AI Models:** Local LLM via Ollama  
+- **AI Models:** Local LLM - Qwen 2.5 | 7B q4
 - **Processing:** Hybrid LLM + rule-based extraction  
 - **Execution:** Fully local desktop setup
 
