@@ -1,0 +1,61 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement (“Agreement”) is made and entered into on 1 January 2023
+by and between NovaEdge Technologies Pvt. Ltd., having its registered office at Hyderabad,
+India (“Service Provider”), and Atlas Logistics Solutions Ltd., having its principal place
+of business at Mumbai, India (“Client”).
+
+BACKGROUND
+
+WHEREAS, the Client desires to engage the Service Provider for certain professional
+technology services, and the Service Provider agrees to provide such services subject
+to the terms and conditions set forth herein.
+
+1. Scope of Work
+The Service Provider shall provide software development, system integration, and
+maintenance services as may be agreed upon from time to time in written statements
+of work executed by both parties.
+
+2. Term
+This Agreement shall commence on the Effective Date and shall remain in effect for a
+period of three (3) years, unless terminated earlier in accordance with this Agreement.
+
+3. Payment Terms
+The Client agrees to pay the Service Provider a total consideration of INR 72,00,000
+(Seventy-Two Lakhs Only). Payments shall be made on a quarterly basis against invoices
+raised by the Service Provider. Each invoice shall be payable within thirty (30) days
+from the date of receipt.
+
+4. Confidentiality
+Each party agrees to maintain the confidentiality of all confidential information
+received from the other party. This obligation shall survive termination of this
+Agreement for a period of five (5) years.
+
+5. Termination
+Either party may terminate this Agreement for convenience by providing sixty (60)
+days’ prior written notice to the other party.
+The Client may terminate this Agreement immediately in the event of a material breach
+by the Service Provider.
+
+MISCELLANEOUS
+
+This section contains general boilerplate provisions that are commonly included in
+commercial agreements and do not materially affect the core obligations of the parties.
+
+6. Governing Law and Jurisdiction
+This Agreement shall be governed by and construed in accordance with the laws of India.
+The courts of Mumbai shall have exclusive jurisdiction over all disputes arising out of
+or in connection with this Agreement.
+
+7. Notices
+All notices under this Agreement shall be in writing and shall be deemed duly given
+when delivered personally or sent by registered post or email to the addresses of the
+parties as set forth herein.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement on the date first written above.
+
+For NovaEdge Technologies Pvt. Ltd.
+Authorized Signatory
+
+For Atlas Logistics Solutions Ltd.
+Authorized Signatory

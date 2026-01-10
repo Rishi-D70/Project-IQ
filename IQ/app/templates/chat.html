@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract IQ | AI Contract Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #10a37f;
+            --primary-light: #1abc9c;
+            --primary-dark: #0d8c6f;
+            --sidebar-bg: #202123;
+            --chat-bg: #444654;
+            --user-msg-bg: #343541;
+            --bot-msg-bg: #444654;
+            --text-primary: #ffffff;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--sidebar-bg);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* SIDEBAR - 30% */
+        .sidebar {
+            width: 30%;
+            min-width: 320px;
+            max-width: 400px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px dashed var(--border-color);
+            transition: var(--transition);
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary-color);
+            background: rgba(16, 163, 127, 0.05);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .section-icon {
+            color: var(--primary-color);
+        }
+
+        .upload-area {
+            text-align: center;
+            padding: 30px 20px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .upload-area:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-top: 15px;
+        }
+
+        .file-label:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .selected-files {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .file-icon {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .file-info {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .upload-btn {
+            width: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .upload-btn:hover:not(:disabled) {
+            background: linear-gradient(to right, var(--primary-light), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 163, 127, 0.3);
+        }
+
+        .upload-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .status-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--success-color));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .status-message {
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .status-processing {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--warning-color);
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid var(--success-color);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--error-color);
+        }
+
+        /* CHAT AREA - 70% */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--chat-bg);
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--sidebar-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .output-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .output-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .output-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .output-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .message {
+            display: flex;
+            gap: 20px;
+            max-width: 800px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .user .avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .bot .avatar {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        }
+
+        .message-content {
+            padding: 18px 24px;
+            border-radius: var(--radius);
+            max-width: 600px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .user .message-content {
+            background: var(--user-msg-bg);
+            border-top-right-radius: 4px;
+        }
+
+        .bot .message-content {
+            background: var(--bot-msg-bg);
+            border-top-left-radius: 4px;
+        }
+
+        .message-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .user .message-time {
+            text-align: left;
+        }
+
+        /* Enhanced Table Styling - ChatGPT-like Tables */
+        .contract-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .contract-table thead {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        }
+
+        .contract-table th {
+            color: white;
+            text-align: left;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+            border: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contract-table th:last-child {
+            border-right: none;
+        }
+
+        .contract-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            vertical-align: top;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .contract-table td:last-child {
+            border-right: none;
+        }
+
+        .contract-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .contract-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .contract-table tr:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .contract-table .field-name {
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            min-width: 180px;
+        }
+
+        .contract-table .field-value {
+            color: var(--text-secondary);
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 10px 0;
+            border-radius: var(--radius);
+            position: relative;
+        }
+
+        .format-notice {
+            padding: 12px 16px;
+            background: rgba(16, 163, 127, 0.1);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 6px;
+            margin: 12px 0 20px 0;
+            font-size: 0.85rem;
+            color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .format-notice i {
+            font-size: 0.9rem;
+        }
+
+        .chat-input-container {
+            padding: 25px 30px;
+            border-top: 1px solid var(--border-color);
+            background: var(--sidebar-bg);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            resize: none;
+            max-height: 200px;
+            min-height: 60px;
+            line-height: 1.5;
+            transition: var(--transition);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .empty-chat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .workspace-status {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .workspace-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .workspace-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .workspace-item.active {
+            background: rgba(16, 163, 127, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .workspace-id {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .workspace-status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-processing-badge {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+        }
+
+        .status-completed-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+        }
+
+        .status-failed-badge {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error-color);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-width: 100%;
+                height: 40vh;
+                min-height: 300px;
+            }
+
+            .chat-container {
+                height: 60vh;
+            }
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 0;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR - 30% -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-file-contract"></i>
+                </div>
+                <div class="logo-text">Contract IQ</div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <div class="section-title">
+                    <i class="fas fa-cloud-upload-alt section-icon"></i>
+                    <span>Upload Contract</span>
+                </div>
+
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3>Drag & Drop Files</h3>
+                    <p style="color: var(--text-muted); margin-top: 5px;">or click to browse</p>
+                    <input type="file" id="fileInput" class="file-input" multiple accept=".pdf,.txt,.doc,.docx,.rtf">
+                    <label for="fileInput" class="file-label">
+                        <i class="fas fa-folder-open"></i> Choose Files
+                    </label>
+                </div>
+
+                <div id="fileList" class="selected-files"></div>
+
+                <button id="uploadBtn" class="upload-btn" disabled>
+                    <i class="fas fa-search"></i> Analyze Contract
+                </button>
+            </div>
+
+            <!-- Status Section -->
+            <div class="status-section">
+                <div class="section-title">
+                    <i class="fas fa-tasks section-icon"></i>
+                    <span>Processing Status</span>
+                </div>
+
+                <div class="status-header">
+                    <span>Document Analysis</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <div id="statusMessage" class="status-message">
+                    <i class="fas fa-info-circle"></i>
+                    <div>Ready to upload documents</div>
+                </div>
+            </div>
+
+            <!-- Workspace Status -->
+            <div class="workspace-status">
+                <div class="section-title">
+                    <i class="fas fa-project-diagram section-icon"></i>
+                    <span>Active Workspaces</span>
+                </div>
+
+                <div id="workspaceList">
+                    <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>No active workspaces</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAT AREA - 70% -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-comments" style="margin-right: 10px; color: var(--primary-color);"></i>
+                    Contract Assistant
+                </div>
+
+                <div class="output-selector">
+                    <button class="output-btn active" data-mode="answer">
+                        <i class="fas fa-comment-alt"></i> Answer
+                    </button>
+                    <button class="output-btn" data-mode="table">
+                        <i class="fas fa-table"></i> Table
+                    </button>
+                    <button class="output-btn" data-mode="export" title="Coming Soon">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- Empty State -->
+                <div class="empty-chat" id="emptyChatState">
+                    <div class="empty-icon">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <h3 style="margin-bottom: 10px;">Ask About Your Contract</h3>
+                    <p style="color: var(--text-muted); max-width: 500px;">
+                        Upload a contract document to start analyzing. Ask questions about terms, clauses, payments, or any other contract details.
+                    </p>
+                    <div style="margin-top: 30px; text-align: left; max-width: 500px;">
+                        <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Example Questions:</h4>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="example-question" style="padding: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; cursor: pointer;" onclick="insertExample('What is the termination clause?')">
+                                • What is the termination clause?
+                            </div>
+                            <div class="example-question" style="padding: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; cursor: pointer;" onclick="insertExample('Who are the parties involved?')">
+                                • Who are the parties involved?
+                            </div>
+                            <div class="example-question" style="padding: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; cursor: pointer;" onclick="insertExample('What are the payment terms?')">
+                                • What are the payment terms?
+                            </div>
+                            <div class="example-question" style="padding: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; cursor: pointer;" onclick="insertExample('give me the service provider, client, effective date, total term period, total amount in a tabular format')">
+                                • Give contract details in a table
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <textarea
+                        id="chatInput"
+                        class="chat-input"
+                        placeholder="Ask a question about the contract..."
+                        rows="1"
+                        disabled
+                    ></textarea>
+                    <button id="sendBtn" class="send-btn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentWorkspaceId = null;
+        let uploadedFiles = [];
+        let pollInterval = null;
+        let isProcessing = false;
+        let chatMode = 'answer';
+        let chatHistory = [];
+        let temporaryTableMode = false;
+
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileList = document.getElementById('fileList');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const statusMessage = document.getElementById('statusMessage');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const emptyChatState = document.getElementById('emptyChatState');
+        const workspaceList = document.getElementById('workspaceList');
+        const outputButtons = document.querySelectorAll('.output-btn');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            updateWorkspaceList();
+        });
+
+        // Event Listeners
+        function setupEventListeners() {
+            // File input
+            fileInput.addEventListener('change', handleFileSelect);
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'var(--primary-color)';
+                uploadArea.style.background = 'rgba(16, 163, 127, 0.05)';
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.borderColor = 'var(--border-color)';
+                uploadArea.style.background = '';
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'var(--border-color)';
+                uploadArea.style.background = '';
+                const files = Array.from(e.dataTransfer.files);
+                updateFileList(files);
+            });
+
+            // Upload button
+            uploadBtn.addEventListener('click', handleUpload);
+
+            // Chat input
+            chatInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                updateSendButtonState();
+            });
+
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!sendBtn.disabled) handleSendMessage();
+                }
+            });
+
+            // Send button
+            sendBtn.addEventListener('click', handleSendMessage);
+
+            // Output mode buttons
+            outputButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Check if export button (coming soon)
+                    if (this.getAttribute('title') === 'Coming Soon') {
+                        showNotification('This feature is coming soon!', 'info');
+                        return;
+                    }
+
+                    outputButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const newMode = this.dataset.mode;
+
+                    // If switching to table mode, set temporary flag
+                    if (newMode === 'table' && chatMode !== 'table') {
+                        chatMode = 'table';
+                        showNotification('Table mode activated. Next response will be in table format.', 'info');
+                    } else if (newMode === 'answer') {
+                        chatMode = 'answer';
+                        temporaryTableMode = false;
+                        showNotification('Answer mode activated.', 'info');
+                    }
+                });
+            });
+        }
+
+        // File handling
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            updateFileList(files);
+        }
+
+        function updateFileList(files) {
+            uploadedFiles = files;
+
+            if (files.length === 0) {
+                fileList.innerHTML = '';
+                uploadBtn.disabled = true;
+                return;
+            }
+
+            let html = '';
+            files.forEach(file => {
+                const size = formatFileSize(file.size);
+                html += `
+                    <div class="file-item">
+                        <i class="fas fa-file-pdf file-icon"></i>
+                        <div class="file-info">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${size}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            fileList.innerHTML = html;
+            uploadBtn.disabled = false;
+
+            updateStatusMessage('Ready to process ' + files.length + ' file(s)', 'info');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Upload processing
+        async function handleUpload() {
+            if (uploadedFiles.length === 0 || isProcessing) return;
+
+            isProcessing = true;
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            updateStatusMessage('Uploading and processing documents...', 'processing');
+            progressFill.style.width = '10%';
+            progressPercent.textContent = '10%';
+
+            try {
+                const formData = new FormData();
+                uploadedFiles.forEach(file => {
+                    formData.append('files', file);
+                });
+
+                const response = await fetch('/api/ingest/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Upload failed: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Upload response:', result);
+
+                if (result.workspace_id) {
+                    currentWorkspaceId = result.workspace_id;
+
+                    // Enable chat
+                    chatInput.disabled = false;
+                    chatInput.placeholder = "Ask a question about the contract...";
+                    updateSendButtonState();
+
+                    // Hide empty chat state
+                    emptyChatState.style.display = 'none';
+
+                    // Add welcome message
+                    addBotMessage("Hello! I've received your contract document. You can now ask me questions about it. For example, you could ask about termination clauses, payment terms, or parties involved. You can also use the Table button or ask for 'tabular format' to get structured data.");
+
+                    updateStatusMessage('Document processing started...', 'processing');
+                    progressFill.style.width = '30%';
+                    progressPercent.textContent = '30%';
+
+                    // Start polling
+                    startPollingStatus(result.workspace_id);
+
+                    // Update workspace list
+                    updateWorkspaceList();
+
+                } else {
+                    throw new Error(result.error || 'No workspace ID returned');
+                }
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                updateStatusMessage('Upload failed: ' + error.message, 'error');
+
+                isProcessing = false;
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="fas fa-search"></i> Analyze Contract';
+            }
+        }
+
+        // Status polling
+        function startPollingStatus(workspaceId) {
+            if (pollInterval) clearInterval(pollInterval);
+
+            pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/status/${workspaceId}/`);
+                    if (!response.ok) {
+                        throw new Error(`Status check failed: ${response.status}`);
+                    }
+
+                    const status = await response.json();
+                    console.log('Status:', status);
+
+                    // Update progress
+                    const progress = status.progress || 0;
+                    progressFill.style.width = `${progress}%`;
+                    progressPercent.textContent = `${progress}%`;
+
+                    // Update status message
+                    if (status.status === 'processing' || status.status === 'ingesting') {
+                        updateStatusMessage('Analyzing contract content...', 'processing');
+                    }
+                    else if (status.status === 'completed') {
+                        updateStatusMessage('Document ready for querying', 'completed');
+                        progressFill.style.width = '100%';
+                        progressPercent.textContent = '100%';
+
+                        clearInterval(pollInterval);
+                        isProcessing = false;
+                        uploadBtn.disabled = false;
+                        uploadBtn.innerHTML = '<i class="fas fa-search"></i> Analyze Contract';
+
+                    }
+                    else if (status.status === 'failed') {
+                        updateStatusMessage('Processing failed: ' + (status.error || 'Unknown error'), 'error');
+                        clearInterval(pollInterval);
+                        isProcessing = false;
+                        uploadBtn.disabled = false;
+                        uploadBtn.innerHTML = '<i class="fas fa-search"></i> Analyze Contract';
+                    }
+
+                } catch (error) {
+                    console.error('Polling error:', error);
+                    updateStatusMessage('Status check failed', 'error');
+                    clearInterval(pollInterval);
+                }
+            }, 2000);
+        }
+
+        // Chat functionality
+        function updateSendButtonState() {
+            const hasText = chatInput.value.trim().length > 0;
+            const hasWorkspace = currentWorkspaceId !== null;
+            sendBtn.disabled = !hasText || !hasWorkspace || isProcessing;
+        }
+
+        async function handleSendMessage() {
+            const question = chatInput.value.trim();
+            if (!question || !currentWorkspaceId || isProcessing) return;
+
+            // Add user message
+            addUserMessage(question);
+
+            // Clear input
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            updateSendButtonState();
+
+            // Determine if user requested table format
+            const userRequestedTable = question.toLowerCase().includes('tabular') ||
+                                       question.toLowerCase().includes('table') ||
+                                       question.toLowerCase().includes('in a table') ||
+                                       question.toLowerCase().includes('format:') && question.toLowerCase().includes('table') ||
+                                       question.toLowerCase().includes('list in') && question.toLowerCase().includes('table') ||
+                                       question.toLowerCase().includes('show as table') ||
+                                       question.toLowerCase().includes('display as table') ||
+                                       question.toLowerCase().includes('in table form') ||
+                                       question.toLowerCase().includes('as a table');
+
+            // Show typing indicator
+            const typingId = showTypingIndicator();
+
+            try {
+                const response = await fetch('/api/query/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        workspace_id: currentWorkspaceId,
+                        question: question,
+                        mode: userRequestedTable ? 'table' : chatMode
+                    })
+                });
+
+                // Remove typing indicator
+                removeTypingIndicator(typingId);
+
+                if (!response.ok) {
+                    throw new Error(`Query failed: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Query response:', result);
+
+                // If user requested table format, switch to table mode temporarily
+                if (userRequestedTable && chatMode !== 'table') {
+                    temporaryTableMode = true;
+                    outputButtons.forEach(b => b.classList.remove('active'));
+                    outputButtons[1].classList.add('active'); // Table button
+                    chatMode = 'table';
+                }
+
+                // If we used table mode temporarily, switch back
+                if (temporaryTableMode && chatMode === 'table') {
+                    setTimeout(() => {
+                        chatMode = 'answer';
+                        temporaryTableMode = false;
+                        outputButtons.forEach(b => b.classList.remove('active'));
+                        outputButtons[0].classList.add('active'); // Answer button
+                        showNotification('Switched back to Answer mode', 'info');
+                    }, 2000);
+                }
+
+                if (result.type === 'text') {
+                    addBotMessage(result.data);
+                    chatHistory.push({
+                        user: question,
+                        bot: result.data,
+                        workspace: currentWorkspaceId,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+                else if (result.type === 'table') {
+                    // Handle table output
+                    addBotTable(result.columns, result.rows || result.data);
+                    chatHistory.push({
+                        user: question,
+                        bot: 'TABLE_RESPONSE',
+                        workspace: currentWorkspaceId,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+                else if (result.type === 'error') {
+                    addBotMessage(`Error: ${result.message}`, true);
+                }
+                else {
+                    addBotMessage('Received unexpected response format', true);
+                }
+
+            } catch (error) {
+                console.error('Query error:', error);
+                removeTypingIndicator(typingId);
+                addBotMessage(`Sorry, there was an error: ${error.message}`, true);
+            }
+        }
+
+        // Chat UI helpers
+        function addUserMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${escapeHtml(text)}</div>
+                    <div class="message-time">${formatTime(new Date())}</div>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function addBotMessage(text, isError = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            if (isError) {
+                messageDiv.innerHTML = `
+                    <div class="avatar" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text" style="color: #f87171;">${escapeHtml(text)}</div>
+                        <div class="message-time">${formatTime(new Date())}</div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">${escapeHtml(text)}</div>
+                        <div class="message-time">${formatTime(new Date())}</div>
+                    </div>
+                `;
+            }
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function addBotTable(columns, rows) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+
+            // Parse table data
+            let tableHTML = '';
+
+            if (columns && rows && columns.length > 0 && rows.length > 0) {
+                // Build table
+                tableHTML += '<div class="table-container">';
+                tableHTML += '<div class="format-notice"><i class="fas fa-table"></i> Contract Details in Table Format</div>';
+                tableHTML += '<table class="contract-table">';
+                tableHTML += '<thead><tr>';
+
+                // Add headers
+                columns.forEach(column => {
+                    tableHTML += `<th>${escapeHtml(column)}</th>`;
+                });
+                tableHTML += '</tr></thead><tbody>';
+
+                // Add rows
+                rows.forEach(row => {
+                    tableHTML += '<tr>';
+
+                    if (Array.isArray(row)) {
+                        // Handle array rows (like [['field', 'value'], ...])
+                        row.forEach((cell, index) => {
+                            if (index === 0) {
+                                tableHTML += `<td class="field-name">${escapeHtml(cell)}</td>`;
+                            } else {
+                                tableHTML += `<td class="field-value">${escapeHtml(cell)}</td>`;
+                            }
+                        });
+                    } else if (typeof row === 'object') {
+                        // Handle object rows
+                        columns.forEach(column => {
+                            const cellValue = row[column] || '';
+                            if (column === columns[0]) {
+                                tableHTML += `<td class="field-name">${escapeHtml(cellValue)}</td>`;
+                            } else {
+                                tableHTML += `<td class="field-value">${escapeHtml(cellValue)}</td>`;
+                            }
+                        });
+                    }
+
+                    tableHTML += '</tr>';
+                });
+
+                tableHTML += '</tbody></table></div>';
+            } else {
+                // No valid table data
+                tableHTML = `<div class="message-text">No table data available</div>`;
+            }
+
+            messageDiv.innerHTML = `
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    ${tableHTML}
+                    <div class="message-time">${formatTime(new Date())}</div>
+                </div>
+            `;
+
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            scrollToBottom();
+            return 'typing-indicator';
+        }
+
+        function removeTypingIndicator(id) {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
+        }
+
+        // Status updates
+        function updateStatusMessage(message, type = 'info') {
+            statusMessage.className = 'status-message';
+
+            let icon = 'fa-info-circle';
+            if (type === 'processing') {
+                statusMessage.classList.add('status-processing');
+                icon = 'fa-spinner fa-spin';
+            } else if (type === 'completed') {
+                statusMessage.classList.add('status-completed');
+                icon = 'fa-check-circle';
+            } else if (type === 'error') {
+                statusMessage.classList.add('status-error');
+                icon = 'fa-exclamation-triangle';
+            }
+
+            statusMessage.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <div>${message}</div>
+            `;
+        }
+
+        // Workspace management
+        async function updateWorkspaceList() {
+            try {
+                const response = await fetch('/api/workspaces/');
+                if (!response.ok) return;
+
+                const result = await response.json();
+
+                if (result.workspaces && result.workspaces.length > 0) {
+                    let html = '';
+                    result.workspaces.forEach(ws => {
+                        const isActive = ws.id === currentWorkspaceId;
+                        const shortId = ws.id.substring(0, 8) + '...';
+                        const statusClass = `status-${ws.status}-badge`;
+
+                        html += `
+                            <div class="workspace-item ${isActive ? 'active' : ''}"
+                                 onclick="selectWorkspace('${ws.id}')"
+                                 data-workspace-id="${ws.id}">
+                                <div>
+                                    <div class="workspace-id">${shortId}</div>
+                                    <small style="color: var(--text-muted);">${new Date(ws.created_at).toLocaleDateString()}</small>
+                                </div>
+                                <div class="workspace-status-badge ${statusClass}">
+                                    ${ws.status}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    workspaceList.innerHTML = html;
+                }
+
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        }
+
+        function selectWorkspace(workspaceId) {
+            currentWorkspaceId = workspaceId;
+            updateWorkspaceList();
+
+            // Enable chat if it was disabled
+            if (chatInput.disabled) {
+                chatInput.disabled = false;
+                chatInput.placeholder = "Ask a question about the contract...";
+                updateSendButtonState();
+                emptyChatState.style.display = 'none';
+                addBotMessage("Workspace selected. You can now ask questions about this contract.");
+            }
+
+            // Show notification
+            showNotification('Workspace selected', 'success');
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                background: ${type === 'success' ? 'var(--success-color)' :
+                             type === 'error' ? 'var(--error-color)' :
+                             type === 'warning' ? 'var(--warning-color)' : 'var(--primary-color)'};
+                color: white;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' :
+                               type === 'error' ? 'fa-exclamation-triangle' :
+                               type === 'warning' ? 'fa-exclamation-circle' : 'fa-info-circle'}"
+                   style="margin-right: 8px;"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Example question insertion
+        window.insertExample = function(question) {
+            if (chatInput.disabled) {
+                showNotification('Please upload a contract first', 'warning');
+                return;
+            }
+            chatInput.value = question;
+            chatInput.style.height = 'auto';
+            chatInput.style.height = (chatInput.scrollHeight) + 'px';
+            updateSendButtonState();
+            chatInput.focus();
+        };
+
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
