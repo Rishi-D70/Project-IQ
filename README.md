@@ -1,6 +1,8 @@
 # ContractIQ  
 **Local AI System for Contract Understanding & Cross-Document Intelligence**
 
+Video - https://drive.google.com/file/d/1J2JIDNkhjIDVbTbfC3PK7gZ5QIXSfe9Z/view?usp=sharing
+
 ## Problem
 Contract review is slow, manual, and error-prone. Legal and compliance teams spend hours searching through long documents to identify **obligations, deadlines, penalties, and responsibilities**. When multiple contracts are involved, tracking inconsistencies or missing clauses becomes even harder.  
 Most existing AI tools solve this by sending documents to the cloud, which introduces **privacy, compliance, and cost issues**—unacceptable for sensitive legal data.
